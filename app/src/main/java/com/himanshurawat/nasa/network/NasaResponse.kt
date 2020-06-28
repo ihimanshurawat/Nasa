@@ -3,13 +3,15 @@ package com.himanshurawat.nasa.network
 import com.google.gson.annotations.SerializedName
 
 data class NasaResponse(
-    private val date: String?,
-    private val explanation: String?,
-    private val hdurl: String?,
+    val date: String?,
+    val explanation: String?,
+    val hdurl: String?,
     @SerializedName("media_type")
-    private val mediaType: String?,
+    val mediaType: String?,
+    @SerializedName("thumbnail_url")
+    val thumbnailUrl: String?,
     @SerializedName("service_version")
-    private val serviceVersion: String?,
-    private val title: String?,
-    private val url: String?
+    val serviceVersion: String?,
+    val title: String?,
+    val url: String?
 )

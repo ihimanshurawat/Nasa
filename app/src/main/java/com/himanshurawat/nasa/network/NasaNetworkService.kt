@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface NasaNetworkService {
 
-    @GET("")
+    @GET("apod")
     fun getMediaOfTheDay(@Query("api_key")key: String , @Query("date")date: String): Call<NasaResponse>
 
 }
