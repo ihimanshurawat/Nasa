@@ -53,5 +53,6 @@ dependencies {
     //PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.2.0'
 
-
+    //Exoplayer
+    implementation 'com.google.android.exoplayer:exoplayer:r2.5.2'
 }

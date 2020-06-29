@@ -1,5 +1,6 @@
 package com.himanshurawat.nasa.ui
 
+import android.graphics.Bitmap
 import com.himanshurawat.nasa.network.NasaResponse
 import java.util.*
 
@@ -22,7 +23,9 @@ interface MainActivityContracts {
         fun displayDatePicker()
         fun hideSystemUI()
         fun showSystemUI()
-
+        fun showProgressBar(visibility: Boolean)
+        fun showSnackBar(value: String)
+        fun youtubeIntent(url: String)
     }
 
     interface Presenter{
@@ -31,6 +34,6 @@ interface MainActivityContracts {
         fun requestData(cal: Calendar)
         fun populateData(response: NasaResponse)
         fun populateDataFailed()
-
+        fun showImageSuccess(status: Boolean)
     }
 }

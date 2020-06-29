@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:id="@+id/rootView">
-
-
-    <VideoView
-        android:visibility="invisible"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photoImageView"
@@ -28,7 +21,15 @@
         android:background="@color/colorPrimary"
         android:alpha="0.3"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <ProgressBar
+        android:id="@+id/photoProgressBar"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_gravity="center_vertical|center_horizontal" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true">
@@ -37,7 +38,6 @@
                 android:id="@+id/titleTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="title"
                 android:includeFontPadding="false"
                 android:textSize="@dimen/_20ssp"
                 android:textColor="@color/colorWhite"
@@ -78,7 +78,6 @@
                 android:layout_marginStart="@dimen/_12sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:layout_marginBottom="@dimen/_20sdp"
-                android:text="description"
                 android:maxLines="15"
                 android:ellipsize="end"
                 android:textColor="@color/colorWhite"
@@ -97,5 +96,4 @@
                 android:layout_marginBottom="@dimen/_20sdp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

@@ -1,6 +1,10 @@
 package com.himanshurawat.nasa.ui
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.GestureDetector
@@ -8,6 +12,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.DatePicker
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
+import com.google.android.material.snackbar.Snackbar
 import com.himanshurawat.nasa.R
 import com.himanshurawat.nasa.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,20 +28,21 @@ class MainActivity : AppCompatActivity(), MainActivityContracts.View,
     DatePickerDialog.OnDateSetListener {
 
     private lateinit var presenter: MainActivityContracts.Presenter
-
     private lateinit var previousCalendar: Calendar
-
-    private var minScale by Delegates.notNull<Float>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter = MainActivityPresenter(this)
 
-        //Requesting API data for today's date
+        /*
+        requesting API data for today's date
+         */
         presenter.requestData(Calendar.getInstance())
 
-        //Setting Listeners
+        /*
+        setting up listeners
+         */
         datePickerImageView.setOnClickListener {
             presenter.clickDatePicker()
         }
@@ -58,10 +69,11 @@ class MainActivity : AppCompatActivity(), MainActivityContracts.View,
         })
     }
 
+
     override fun setZoom(value: Float) {
         when(value){
             MIN_SCALE ->{
-                photoImageView.setScale(minScale,true)
+                photoImageView.setScale(MIN_SCALE,true)
             }
             MAX_SCALE ->{
                 photoImageView.setScale(MAX_SCALE,true)
@@ -120,7 +132,6 @@ class MainActivity : AppCompatActivity(), MainActivityContracts.View,
         titleTextView.text = title
     }
 
-
     /*
    the fun to set description
     */
@@ -152,11 +163,32 @@ class MainActivity : AppCompatActivity(), MainActivityContracts.View,
    the fun to set Media
     */
     override fun setMediaLayout(url: String) {
-        minScale = photoImageView.scale
         photoImageView.maximumScale = MAX_SCALE
-        photoImageView.minimumScale = minScale
-        Glide.with(this).load(url).into(photoImageView)
+        photoImageView.minimumScale = MIN_SCALE
+        Glide.with(this).load(url).listener(object:RequestListener<Drawable>{
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                presenter.showImageSuccess(false)
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                presenter.showImageSuccess(true)
+                return false
+            }
+        }).into(photoImageView)
     }
+
 
     /*
    the fun to display date picker dialogue
@@ -182,6 +214,9 @@ class MainActivity : AppCompatActivity(), MainActivityContracts.View,
         datePickerDialog.show()
     }
 
+    /*
+    enters fullscreen UI
+     */
     override fun hideSystemUI() {
         window.decorView.systemUiVisibility = (
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -192,12 +227,41 @@ class MainActivity : AppCompatActivity(), MainActivityContracts.View,
                         or View.SYSTEM_UI_FLAG_IMMERSIVE)
     }
 
+    /*
+    return the UI back to normal
+     */
     override fun showSystemUI() {
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 
+    /*
+    Show or Hide Circular Progress Bar
+     */
+    override fun showProgressBar(visibility: Boolean) {
+        if(visibility){
+            photoProgressBar.visibility = View.VISIBLE
+        }else{
+            photoProgressBar.visibility = View.GONE
+        }
+    }
+
+    /*
+    Display the SnackBar
+     */
+    override fun showSnackBar(value: String) {
+        Snackbar.make(rootView,value,Snackbar.LENGTH_LONG).setAnimationMode(Snackbar.ANIMATION_MODE_SLIDE).show()
+    }
+
+    override fun youtubeIntent(url: String) {
+        val youtubeIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(youtubeIntent)
+    }
+
+    /*
+    invoked when a data is selected from the DataPicker
+     */
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         val cal = Calendar.getInstance()
         cal.set(year,month,dayOfMonth)

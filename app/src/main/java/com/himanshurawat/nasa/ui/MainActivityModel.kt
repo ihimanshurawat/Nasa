@@ -11,26 +11,26 @@ import retrofit2.Retrofit
 
 class MainActivityModel(private val presenter: MainActivityContracts.Presenter): MainActivityContracts.Model {
 
-    override fun getData(date: String) {
-        /*
+    /*
         fetching data for the given date
          */
+    override fun getData(date: String) {
         RetrofitClient
             .getClient()
             .create(NasaNetworkService::class.java)
             .getMediaOfTheDay(API,date)
             .enqueue(object: Callback<NasaResponse>{
-            override fun onFailure(call: Call<NasaResponse>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onResponse(call: Call<NasaResponse>, response: Response<NasaResponse>) {
-                if (response.isSuccessful && response.body() != null){
-                    val res = response.body() as NasaResponse
-                    presenter.populateData(res)
+                override fun onFailure(call: Call<NasaResponse>, t: Throwable) {
+                    presenter.populateDataFailed()
                 }
-            }
-
+                override fun onResponse(call: Call<NasaResponse>, response: Response<NasaResponse>) {
+                    if (response.isSuccessful && response.body() != null){
+                        val res = response.body() as NasaResponse
+                        presenter.populateData(res)
+                    }else{
+                        presenter.populateDataFailed()
+                    }
+                }
         })
     }
 }
